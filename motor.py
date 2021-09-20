@@ -3,10 +3,9 @@
 import RPi.GPIO as GPIO          
 from time import sleep
 from gpiozero import AngularServo
+from scripts import StringToTuple
 
 s = AngularServo(13) 
-
-
 
 ang = -42
 zang = 0
@@ -62,8 +61,6 @@ def ChangeMotorDrc(bol):
     GPIO.output(in3, not bol)
     GPIO.output(in4, bol)
 
-def StringToTuple(txt):
-    return tuple(map(int, txt.split(', ')))
 
 def main():
     while(1):
