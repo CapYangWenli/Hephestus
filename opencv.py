@@ -61,8 +61,8 @@ while True:
 
  #GREEN COLOR DETECTION
 
-    green_lower = np.array([25,52,72])
-    green_upper = np.array([102, 255, 255])
+    green_lower = np.array([35, 71, 63])
+    green_upper = np.array([159, 245, 120])
     green_mask = cv2.inRange(hsv, green_lower, green_upper)
     res_green = cv2.bitwise_and(frame, frame, mask=green_mask)
     green_opening = cv2.morphologyEx(green_mask, cv2.MORPH_OPEN, kernel)
