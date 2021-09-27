@@ -9,16 +9,16 @@ import sys
 
 
 def init():
-    
-    cap = cv2.VideoCapture(0)
-    ret, frame = cap.read()
 
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    lower_blue = np.array([60, 40, 40])
-    upper_blue = np.array([150, 255, 255])
-    mask = cv2.inRange(hsv, lower_blue, upper_blue)
-    edges = cv2.Canny(mask, 200, 400)
-    cropped_edges = cv2.bitwise_and(edges, mask)
+    global cap = cv2.VideoCapture(0)
+    global ret, frame = cap.read()
+
+    global hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    global lower_blue = np.array([60, 40, 40])
+    global upper_blue = np.array([150, 255, 255])
+    global mask = cv2.inRange(hsv, lower_blue, upper_blue)
+    global edges = cv2.Canny(mask, 200, 400)
+    global cropped_edges = cv2.bitwise_and(edges, mask)
 
 
 
