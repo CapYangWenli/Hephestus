@@ -7,14 +7,10 @@ import sys
 
 cap = cv2.VideoCapture(0)
 
-def make_brighter(frame):
-        canvas = np.zeros_like(frame)
-        cv2.addWeighted(frame, 2, canvas, 2, 2)
-        return frame
+
 
 def init():
     ret, frame = cap.read()
-    frame = make_brighter(frame)
 
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     lower_blue = np.array([60, 40, 40])
