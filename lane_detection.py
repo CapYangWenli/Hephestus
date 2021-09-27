@@ -5,11 +5,12 @@ import math
 import datetime
 import sys
 
-cap = cv2.VideoCapture(0)
 
 
 
 def init():
+    
+    cap = cv2.VideoCapture(0)
     ret, frame = cap.read()
 
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
