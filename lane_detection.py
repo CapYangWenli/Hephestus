@@ -4,12 +4,20 @@ import logging
 import math
 import datetime
 import sys
+# import motor
 
+cap = cv2.VideoCapture(0)
+
+def make_brighter(frame):
+        canvas = np.zeros_like(frame)
+        cv2.addWeighted(frame, 2, canvas, 2, 2)
+        return frame
 
 while True:
 
-    cap = cv2.VideoCapture(0)
     ret, frame = cap.read()
+    frame = make_brighter(frame)
+    cv2.imshow("real", frame)
 
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     lower_blue = np.array([60, 40, 40])
@@ -18,36 +26,39 @@ while True:
     edges = cv2.Canny(mask, 200, 400)
     cropped_edges = cv2.bitwise_and(edges, mask)
 
+    
+
+    
 
     def detect_lane(frame):
 
         edges = detect_edges(frame)
-        cv2.imshow('edges', edges)
 
         cropped_edges = region_of_interest(edges)
-        cv2.imshow('edges cropped', cropped_edges)
-
+        
         line_segments = detect_line_segments(cropped_edges)
         line_segment_image = display_lines(frame, line_segments)
         cv2.imshow("line segments", line_segment_image)
-
+        
+        
+        
         lane_lines = average_slope_intercept(frame, line_segments)
-        lane_lines_image = display_lines(frame, lane_lines)
-        cv2.imshow("lane lines", lane_lines_image)
+    
 
         steering_angle = compute_steering_angle(frame, lane_lines)
+        
 
-        heading_image = display_heading_line(frame, steering_angle, line_color=(0, 0, 255), line_width=5 )
-        cv2.imshow("heading_image", heading_image)
-        return lane_lines
+        final_image = display_final_lines(frame, steering_angle, lane_lines)
+        cv2.imshow("heading_image", final_image)
+        
+        return lane_lines, steering_angle
 
 
 
     def detect_edges(frame):
         # filter for blue lane lines
-        cv2.imshow('hsv', hsv)
+     
         # detect edges
-        cv2.imshow('edges', edges)
         return edges
 
 
@@ -57,15 +68,14 @@ while True:
 
         # only focus bottom half of the screen
         polygon = np.array([[
-            (0, height * 1 / 2),
-            (width, height * 1 / 2),
-            (width, height),
-            (0, height),
+            (0, height * 2 / 3),
+            (width, height * 2 / 3),
+            (width, height * 5 /6),
+            (0, height * 5 / 6),
         ]], np.int32)
 
         cv2.fillPoly(mask, polygon, 255)
         cropped_edges = cv2.bitwise_and(edges, mask)
-        cv2.imshow ('cropped edges', cropped_edges)
         return cropped_edges
 
 
@@ -74,8 +84,7 @@ while True:
         rho = 1  # distance precision in pixel, i.e. 1 pixel
         angle = np.pi / 180  # angular precision in radian, i.e. 1 degree
         min_threshold = 10  # minimal of votes
-        line_segments = cv2.HoughLinesP(cropped_edges, rho, angle, min_threshold, 
-                                        np.array([]), minLineLength=8, maxLineGap=4)
+        line_segments = cv2.HoughLinesP(cropped_edges, rho, angle, min_threshold, np.array([]), minLineLength=8, maxLineGap=4)
         return line_segments
 
 
@@ -154,12 +163,9 @@ while True:
         angle_to_mid_radian = math.atan(x_offset / y_offset)  # angle (in radian) to center vertical line
         angle_to_mid_deg = int(angle_to_mid_radian * 180.0 / math.pi)  # angle (in degrees) to center vertical line
         steering_angle = angle_to_mid_deg + 90  # this is the steering angle needed by picar front wheel
-
+        print(steering_angle)
         logging.debug('new steering angle: %s' % steering_angle)
         return steering_angle
-
-
-
 
     def display_lines(frame, lines, line_color=(0, 255, 0), line_width=2):
         line_image = np.zeros_like(frame)
@@ -168,6 +174,30 @@ while True:
                 for x1, y1, x2, y2 in line:
                     cv2.line(line_image, (x1, y1), (x2, y2), line_color, line_width)
         line_image = cv2.addWeighted(frame, 0.8, line_image, 1, 1)
+        return line_image
+
+
+    def display_final_lines(frame, steering_angle, lines, line_color=(0, 255, 0), line_width=2):
+        line_image = np.zeros_like(frame)
+        if lines is not None:
+            for line in lines:
+                for x1, y1, x2, y2 in line:
+                    cv2.line(line_image, (x1, y1), (x2, y2), line_color, line_width)
+        line_image = cv2.addWeighted(frame, 0.8, line_image, 1, 1)
+        
+        heading_image = np.zeros_like(frame)
+        height, width, _ = frame.shape
+        
+    
+        steering_angle_radian = steering_angle / 180.0 * math.pi
+        x1 = int(width / 2)
+        y1 = height
+        x2 = int(x1 - height / 2 / math.tan(steering_angle_radian))
+        y2 = int(height / 2)
+
+        cv2.line(heading_image, (x1, y1), (x2, y2), (0, 0, 255), line_width)
+        line_image = cv2.addWeighted(line_image, 1, heading_image, 1, 1)
+        
         return line_image
 
 
@@ -207,8 +237,6 @@ while True:
         return [[x1, y1, x2, y2]]
 
 
-
-    detect_lane(frame)
 
 
     k = cv2.waitKey(1)&0xFF
