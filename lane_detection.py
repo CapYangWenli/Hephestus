@@ -6,8 +6,6 @@ import datetime
 import sys
 
 
-
-
 def detect_lane(frame, hsv, lower_blue, upper_blue, mask, edges):
 
     # edges = detect_edges(frame)
@@ -18,20 +16,14 @@ def detect_lane(frame, hsv, lower_blue, upper_blue, mask, edges):
     line_segment_image = display_lines(frame, line_segments)
     cv2.imshow("line segments", line_segment_image)
     
-    
-    
     lane_lines = average_slope_intercept(frame, line_segments)
-
 
     steering_angle = compute_steering_angle(frame, lane_lines)
     
-
     final_image = display_final_lines(frame, steering_angle, lane_lines)
     cv2.imshow("heading_image", final_image)
     
     return lane_lines, steering_angle
-
-
 
 def detect_edges(frame):
     # filter for blue lane lines
@@ -64,8 +56,6 @@ def detect_line_segments(cropped_edges):
     min_threshold = 10  # minimal of votes
     line_segments = cv2.HoughLinesP(cropped_edges, rho, angle, min_threshold, np.array([]), minLineLength=8, maxLineGap=4)
     return line_segments
-
-
 
 def average_slope_intercept(frame, line_segments):
     """
@@ -112,8 +102,6 @@ def average_slope_intercept(frame, line_segments):
     logging.debug('lane lines: %s' % lane_lines)  # [[[316, 720, 484, 432]], [[1009, 720, 718, 432]]]
 
     return lane_lines
-
-
 
 def compute_steering_angle(frame, lane_lines):
     """ Find the steering angle based on lane line coordinate
@@ -213,16 +201,6 @@ def make_points(frame, line):
         return [[x1, y1, x2, y2]]
 
 
-def loop_condtions():
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    lower_blue = np.array([60, 40, 40])
-    upper_blue = np.array([150, 255, 255])
-    mask = cv2.inRange(hsv, lower_blue, upper_blue)
-    edges = cv2.Canny(mask, 200, 400)
-    cropped_edges = cv2.bitwise_and(edges, mask)
-
-    return hsv, lower_blue, upper_blue, mask, edges
-
 def main():
 
     cap = cv2.VideoCapture(0)
@@ -248,6 +226,6 @@ if __name__ == '__main__':
 
 
 
-()
+
 
 
