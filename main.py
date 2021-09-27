@@ -1,10 +1,10 @@
-import motor
+# import motor
 import lane_detection
-
-lane_detection.init()
+cap = lane_detection.cv2.VideoCapture(0)
 
 while True:
-    
-    servo_angle = lane_detection.main()
-    motor.ChangeServoAng(servo_angle)
-    motor.ChangeMotorSp(30)
+    res, frame = cap.read()
+    lane_detection.detect_lane(frame, *lane_detection.loop_condtions()) 
+    # servo_angle = lane_detection.main()
+    # motor.ChangeServoAng(servo_angle)
+    # motor.ChangeMotorSp(30)
