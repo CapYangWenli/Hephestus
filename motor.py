@@ -3,10 +3,9 @@
 import RPi.GPIO as GPIO          
 from time import sleep
 from gpiozero import AngularServo
+from scripts import StringToTuple
 
 s = AngularServo(13) 
-
-
 
 ang = -42
 zang = 0
@@ -43,88 +42,37 @@ pb.start(25)
 
 print("\n")
 print("The default speed & direction of motor is LOW & Forward.....")
-print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
-print("\n")    
-while(1):
+print("You should write three numbers separated by comma.")
+print("First one is responsible for motor speed. It shoul range from 0 to 100")
+print("The second number is servo angle. It must be in range of -15 to 15")
+print("The third number is direction of motors. It must be either 1 or 0 where 1 is forward and 0 is backward")
+print("\n")
 
-    x=raw_input()
+def ChangeMotorSp(val):
+    pa.ChangeDutyCycle(val)
+    pb.ChangeDutyCycle(val)
+
+def ChangeServoAng(val):
+    s.angle = val
+
+def ChangeMotorDrc(bol):
+    GPIO.output(in1, not bol)
+    GPIO.output(in2, bol)
+    GPIO.output(in3, not bol)
+    GPIO.output(in4, bol)
+
+
+def main():
+    while(1):
     
-    if x=='r':
-        print("run")
-        if(temp1==1):
-         GPIO.output(in1,GPIO.LOW)
-         GPIO.output(in2,GPIO.HIGH)
-         GPIO.output(in3,GPIO.LOW)
-         GPIO.output(in4,GPIO.HIGH)
-         print("forward")
-        else:
-         GPIO.output(in1,GPIO.HIGH)
-         GPIO.output(in2,GPIO.LOW)
-         GPIO.output(in3,GPIO.HIGH)
-         GPIO.output(in4,GPIO.LOW)
-         print("backward")
-         x='z'
-    elif x=='s':
-        print("stop")
-        GPIO.output(in1,GPIO.LOW)
-        GPIO.output(in2,GPIO.LOW)
-        GPIO.output(in3,GPIO.LOW)
-        GPIO.output(in4,GPIO.LOW)
-        x='z'
-
-    elif x=='f':
-        print("forward")
-        GPIO.output(in1,GPIO.LOW)
-        GPIO.output(in2,GPIO.HIGH)
-        GPIO.output(in3,GPIO.LOW)
-        GPIO.output(in4,GPIO.HIGH)
-        temp1=1
-        x='z'
-    elif x=='b':
-        print("backward")
-        GPIO.output(in1,GPIO.HIGH)
-        GPIO.output(in2,GPIO.LOW)
-        GPIO.output(in3,GPIO.HIGH)
-        GPIO.output(in4,GPIO.LOW)
-        temp1=0
-        x='z'
-
-    elif x=='l':
-            print("low")
-            pa.ChangeDutyCycle(25)
-            pb.ChangeDutyCycle(25)
-            x='z'
-
-    elif x=='m':
-        print("medium")
-        pa.ChangeDutyCycle(50)
-        pb.ChangeDutyCycle(50)
-        x='z'
-    elif x=='h':
-        print("high")
-        pa.ChangeDutyCycle(75)
-        pb.ChangeDutyCycle(75)
-        x='z'
-
-    elif x == 'p':
-        print("left")
-        s.angle = ang
-        x = 'z'
-
-    elif x == ']':
-        print("right")
-        s.angle = -ang
-        x = 'z'
-        
-    elif x == '[':
-        print("forward")
-        s.angle = zang
-        x = 'z'
-
-    elif x=='e':
-        GPIO.cleanup()
-        break
+        tup = StringToTuple(raw_input())
     
-    else:
-        print("<<<  wrong data  >>>")
-        print("please enter the defined data to continue.....")
+        mot_sp, s_angl, drc = tup
+
+        ChangeMotorSp(mot_sp)
+        ChangeServoAng(s_angl)
+        ChangeMotorDrc(drc)
+
+if __name__ == "__main__":
+    main()
+    
