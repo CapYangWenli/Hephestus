@@ -4,7 +4,6 @@ import logging
 import math
 import datetime
 import sys
-# import motor
 
 cap = cv2.VideoCapture(0)
 
@@ -13,11 +12,9 @@ def make_brighter(frame):
         cv2.addWeighted(frame, 2, canvas, 2, 2)
         return frame
 
-while True:
-
+def init():
     ret, frame = cap.read()
     frame = make_brighter(frame)
-    cv2.imshow("real", frame)
 
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     lower_blue = np.array([60, 40, 40])
@@ -26,9 +23,9 @@ while True:
     edges = cv2.Canny(mask, 200, 400)
     cropped_edges = cv2.bitwise_and(edges, mask)
 
-    
 
-    
+
+def main():
 
     def detect_lane(frame):
 
@@ -236,13 +233,13 @@ while True:
         x2 = max(-width, min(2 * width, int((y2 - intercept) / slope)))
         return [[x1, y1, x2, y2]]
 
+    _, steering_angle = detect_lane(frame)
 
-
-
-    k = cv2.waitKey(1)&0xFF
-    if k==27:
-        break
+   return steering_angle
     
+
+
+
 cap.release()
 cv2.destroyAllWindows ()
 
