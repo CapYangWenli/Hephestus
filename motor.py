@@ -3,7 +3,6 @@
 import RPi.GPIO as GPIO          
 from time import sleep
 from gpiozero import AngularServo
-from scripts import StringToTuple
 
 class Car:
 
@@ -63,7 +62,7 @@ def main():
     while(1):
     
         str = input()
-        
+
         str = str.split(" ")
         tup = tuple(map(int, str))
 
