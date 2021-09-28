@@ -45,7 +45,7 @@ class Car:
     
     def ChangeMotorSp(self, val):
         self.pa.ChangeDutyCycle(val)
-        self.pb.ChangeDutyCyscle(val)
+        self.pb.ChangeDutyCycle(val)
     
     def ChangeServoAng(self, val):
         self.s.angle = val
