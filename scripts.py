@@ -14,7 +14,7 @@ def StringToTuple(txt):
 
 def main():
     print("Please enter three numbers in tuple")
-    txt = input()
+    txt = raw_input()
     print(StringToTuple(txt))
 
 if __name__ == "__main__":
