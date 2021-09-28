@@ -200,13 +200,16 @@ def make_points(frame, line):
         x2 = max(-width, min(2 * width, int((y2 - intercept) / slope)))
         return [[x1, y1, x2, y2]]
 
+cap = cv2.VideoCapture(0)
+
 
 def main():
 
-    cap = cv2.VideoCapture(0)
     
     while True:
-        res, frame = cap.read()
+        ret, frame = cap.read()
+        cv2.imshow("video", frame)        
+
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         lower_blue = np.array([60, 40, 40])
         upper_blue = np.array([150, 255, 255])
@@ -214,16 +217,22 @@ def main():
         edges = cv2.Canny(mask, 200, 400)
         cropped_edges = cv2.bitwise_and(edges, mask)
         detect_lane(frame, hsv, lower_blue, upper_blue, mask, edges)
+        if cv2.waitKey(1)&0xFF == ord("q"):
+            break
+    
+cap.release()
+cv2.destroyAllWindows()  
 
-    cap.release()
-    cv2.destroyAllWindows   
+   
 
+
+
+   
 if __name__ == '__main__':
     main()
 
 
-    
-
+   
 
 
 
