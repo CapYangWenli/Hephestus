@@ -61,8 +61,8 @@ class Car:
 def main():
     car1 = Car()
     while(1):
-    
-        tup = StringToTuple(input())
+        str = input()
+        tup = StringToTuple(str)
 
         mot_sp, s_angl, drc = tup
 

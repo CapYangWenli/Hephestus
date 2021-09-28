@@ -10,7 +10,7 @@ def StringToTuple(txt):
     if tp[1] > 90 or tp[1] < -90:
         raise IncorrectInput("The value of servo angle can only be in -90 to 90 range")
 
-    return tuple(map(int, txt.split(', ')))
+    return tp
 
 def main():
     print("Please enter three numbers in tuple")
