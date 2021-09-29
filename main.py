@@ -1,7 +1,7 @@
 from motor import Car
 from lane_detection import np, cv2, detect_lane
 
-dev_angle = 15
+dev_angle = 10
 
 cap = cv2.VideoCapture(0)
 car1 = Car()
@@ -14,7 +14,7 @@ while True:
     previous_angle = 0
     try:
         ret, frame = cap.read()
-        frame = cv2.addWeighted(frame, 1.6, np.full_like(frame, 0), 1, 1)
+        frame = cv2.bilateralFilter(frame, 9, 75, 75)
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         lower_blue = np.array([60, 40, 40])
         upper_blue = np.array([150, 255, 255])
@@ -31,7 +31,7 @@ while True:
 #              
 #         if servo_angle - previous_angle < -dev_angle:
 #             servo_angle = previous_angle - dev_angle
-#             
+# #             
         
         servo_angle = (servo_angle+previous_angle)/2
         

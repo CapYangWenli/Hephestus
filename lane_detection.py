@@ -40,8 +40,8 @@ def region_of_interest(edges):
     polygon = np.array([[
         (0, height * 3 / 4),
         (width, height * 3 / 4),
-        (width, height * 9 /10),
-        (0, height * 9 / 10),
+        (width, height * 7 /8),
+        (0, height * 7 / 8),
     ]], np.int32)
 
     cv2.fillPoly(mask, polygon, 255)
