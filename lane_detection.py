@@ -7,7 +7,7 @@ import sys
 
 
 def detect_lane(frame, hsv, lower_blue, upper_blue, mask, edges):
-
+ 
     # edges = detect_edges(frame)
 
     cropped_edges = region_of_interest(edges)
@@ -38,10 +38,10 @@ def region_of_interest(edges):
 
     # only focus bottom half of the screen
     polygon = np.array([[
-        (0, height * 3 / 4),
-        (width, height * 3 / 4),
-        (width, height * 9 /10),
-        (0, height * 9 / 10),
+        (0, height * 2 / 3),
+        (width, height * 2 / 3),
+        (width, height * 5 /6),
+        (0, height * 5 / 6),
     ]], np.int32)
 
     cv2.fillPoly(mask, polygon, 255)
@@ -119,7 +119,7 @@ def compute_steering_angle(frame, lane_lines):
     else:
         _, _, left_x2, _ = lane_lines[0][0]
         _, _, right_x2, _ = lane_lines[1][0]
-        camera_mid_offset_percent = -0.02 # 0.0 means car pointing to center, -0.03: car is centered to left, +0.03 means car pointing to right
+        camera_mid_offset_percent = 0.02 # 0.0 means car pointing to center, -0.03: car is centered to left, +0.03 means car pointing to right
         mid = int(width / 2 * (1 + camera_mid_offset_percent))
         x_offset = (left_x2 + right_x2) / 2 - mid
 
@@ -128,7 +128,7 @@ def compute_steering_angle(frame, lane_lines):
 
     angle_to_mid_radian = math.atan(x_offset / y_offset)  # angle (in radian) to center vertical line
     angle_to_mid_deg = int(angle_to_mid_radian * 180.0 / math.pi)  # angle (in degrees) to center vertical line
-    steering_angle = angle_to_mid_deg + 90 # this is the steering angle needed by picar front wheel
+    steering_angle = angle_to_mid_deg + 90  # this is the steering angle needed by picar front wheel
     print(steering_angle)
     logging.debug('new steering angle: %s' % steering_angle)
     return steering_angle
@@ -200,12 +200,8 @@ def make_points(frame, line):
         x2 = max(-width, min(2 * width, int((y2 - intercept) / slope)))
         return [[x1, y1, x2, y2]]
 
-cap = cv2.VideoCapture(0)
-
-
 def main():
-
-    
+    cap = cv2.VideoCapture(0)
     while True:
         ret, frame = cap.read()
         cv2.imshow("video", frame)        
@@ -219,17 +215,15 @@ def main():
         detect_lane(frame, hsv, lower_blue, upper_blue, mask, edges)
         if cv2.waitKey(1)&0xFF == ord("q"):
             break
-    
-cap.release()
+    cap.release()
+
+if __name__ == '__main__':
+    main()
+
 cv2.destroyAllWindows()  
 
    
 
-
-
-   
-if __name__ == '__main__':
-    main()
 
 
    
