@@ -1,16 +1,23 @@
-from motor import Car
+# from motor import Car
 from lane_detection import np, cv2, detect_lane
+import logging
+import math
+import datetime
+import sys
 
 dev_angle = 15
 
+
+
+# car = Car()
+# car.ChangeMotorDrc(1)
+# car.ChangeMotorSp(20)
+
+
+
 cap = cv2.VideoCapture(0)
-car1 = Car()
-car1.ChangeMotorDrc(1)
-car1.ChangeMotorSp(20)
-
-
-
 while True:
+
     previous_angle = 0
     try:
         ret, frame = cap.read()
@@ -25,26 +32,28 @@ while True:
         _, servo_angle = detect_lane(frame, hsv, lower_blue, upper_blue, mask, edges)
         servo_angle = servo_angle - 90
         
-#         if servo_angle - previous_angle > dev_angle:
-#             servo_angle = dev_angle + previous_angle
-#              
-#              
-#         if servo_angle - previous_angle < -dev_angle:
-#             servo_angle = previous_angle - dev_angle
-#             
+        # if servo_angle - previous_angle > dev_angle:
+        #     servo_angle = dev_angle + previous_angle
+             
+             
+        # if servo_angle - previous_angle < -dev_angle:
+        #     servo_angle = previous_angle - dev_angle
+            
         
         servo_angle = (servo_angle+previous_angle)/2
         
-        car1.ChangeServoAng(servo_angle)
+        # car.ChangeServoAng(servo_angle)
         previous_angle = servo_angle
         
+        # cap.release()
+
         if cv2.waitKey(1)&0xFF == ord("q"):
-            car1.ChangeMotorSp(0)
-            car1.ChangeServoAng(0)
-            
+            # car.ChangeMotorSp(0)
+            # car.ChangeServoAng(0)
             break
+
     except:
         continue
-    
-cap.release()
+
+
 cv2.destroyAllWindows() 
