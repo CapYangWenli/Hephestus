@@ -37,8 +37,8 @@ class Car:
 
         cls.pb=GPIO.PWM(cls.enb,1000)
 
-        cls.pa.start(25)
-        cls.pb.start(25)
+        cls.pa.start(0)
+        cls.pb.start(0)
 
         cls.s = AngularServo(13) 
 
@@ -61,7 +61,7 @@ class Car:
 def main():
     car1 = Car()
     while(1):
-        str = raw_input()
+        str = input()
         tup = StringToTuple(str)
 
         mot_sp, s_angl, drc = tup
