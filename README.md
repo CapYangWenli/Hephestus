@@ -1,5 +1,8 @@
 # Hephestus
 
-Here is our rep!
+Hephestus is a revolutinary project that aims to change the world! *(eventually)*
 
-*Takhmina Temirbay and Anushervon Tabarov are the main contributers*
+We are driven by strong engineering principles and unbound curiosity towards the world
+
+
+*Takhmina Temirbay, Anushervon Tabarov and Damir Maksut are the main contributers*
