@@ -21,8 +21,9 @@ while True:
     previous_angle = 0
     try:
         ret, frame = cap.read()
-        frame = cv2.addWeighted(frame, 1.6, np.full_like(frame, 0), 1, 1)
+        # frame = cv2.addWeighted(frame, 1.6, np.full_like(frame, 0), 1, 1)
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        cv2.imshow('hsv', hsv)
         lower_blue = np.array([60, 40, 40])
         upper_blue = np.array([150, 255, 255])
         mask = cv2.inRange(hsv, lower_blue, upper_blue)
@@ -45,7 +46,7 @@ while True:
         # car.ChangeServoAng(servo_angle)
         previous_angle = servo_angle
         
-        # cap.release()
+        #cap.release()
 
         if cv2.waitKey(1)&0xFF == ord("q"):
             # car.ChangeMotorSp(0)

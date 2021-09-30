@@ -14,14 +14,14 @@ def detect_lane(frame, hsv, lower_blue, upper_blue, mask, edges):
     
     line_segments = detect_line_segments(cropped_edges)
     line_segment_image = display_lines(frame, line_segments)
-    cv2.imshow("line segments", line_segment_image)
+    # cv2.imshow("line segments", line_segment_image)
     
     lane_lines = average_slope_intercept(frame, line_segments)
 
     steering_angle = compute_steering_angle(frame, lane_lines)
     
     final_image = display_final_lines(frame, steering_angle, lane_lines)
-    cv2.imshow("heading_image", final_image)
+    # cv2.imshow("heading_image", final_image)
     
     return lane_lines, steering_angle
 
@@ -129,7 +129,6 @@ def compute_steering_angle(frame, lane_lines):
     angle_to_mid_radian = math.atan(x_offset / y_offset)  # angle (in radian) to center vertical line
     angle_to_mid_deg = int(angle_to_mid_radian * 180.0 / math.pi)  # angle (in degrees) to center vertical line
     steering_angle = angle_to_mid_deg + 90  # this is the steering angle needed by picar front wheel
-    print(steering_angle)
     logging.debug('new steering angle: %s' % steering_angle)
     return steering_angle
 
@@ -200,17 +199,59 @@ def make_points(frame, line):
         x2 = max(-width, min(2 * width, int((y2 - intercept) / slope)))
         return [[x1, y1, x2, y2]]
 
+def nothing():
+    pass
+
 def main():
     cap = cv2.VideoCapture(0)
+    cv2.namedWindow("track", cv2.WINDOW_NORMAL)
+ 
+    cv2.createTrackbar ("HL","track", 0, 180, nothing)
+    cv2.createTrackbar ("SL","track", 0, 255, nothing)
+    cv2.createTrackbar ("VL","track", 0, 255, nothing)
+    
+    cv2.createTrackbar ("H","track", 0, 180, nothing)
+    cv2.createTrackbar ("S","track", 0, 255, nothing)
+    cv2.createTrackbar ("V","track", 0, 255, nothing)
+
     while True:
+
+        hl = cv2.getTrackbarPos ("HL","track")
+        sl = cv2.getTrackbarPos ("SL", "track")
+        vl = cv2.getTrackbarPos ("VL", "track")
+        
+        h = cv2.getTrackbarPos ("H","track")
+        s = cv2.getTrackbarPos ("S", "track")
+        v = cv2.getTrackbarPos ("V", "track")
+
+        lower_blue = np.array([hl, sl, vl])
+        upper_blue = np.array([h, s, v])
+
+        print(lower_blue)
+        print(upper_blue)
+
         ret, frame = cap.read()
-        cv2.imshow("video", frame)        
+        # cv2.imshow("video", frame) 
+
+
+
+        kernel = np.ones((5, 5), np.uint8)
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        lower_blue = np.array([60, 40, 40])
-        upper_blue = np.array([150, 255, 255])
         mask = cv2.inRange(hsv, lower_blue, upper_blue)
+
+        # cv2.imshow("HSV", hsv)
+        cv2.imshow("Mask", mask)
+
+        # grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        # grey_edges = cv2.Canny(grey, 200, 400)
+
+        # image = cv2.bitwise_and(grey_edges, mask)
+        # cv2.imshow("Grey edges + Mask", image)
+
         edges = cv2.Canny(mask, 200, 400)
+        cv2.imshow("HSV Edges", edges)
+        # cv2.imshow("Grey Edges", grey_edges)
         cropped_edges = cv2.bitwise_and(edges, mask)
         detect_lane(frame, hsv, lower_blue, upper_blue, mask, edges)
         if cv2.waitKey(1)&0xFF == ord("q"):
