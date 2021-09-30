@@ -15,28 +15,6 @@ while True:
     frame = cv2.bilateralFilter (frame, 9, 75,75)
     hsv  = cv2.cvtColor (frame, cv2.COLOR_BGR2HSV)
     
- #BLUE COLOR DETECTION
-    
-    blue_lower = np.array([94,80, 2])
-    blue_upper = np.array([120,255,255])
-    blue_mask = cv2.inRange(hsv, blue_lower, blue_upper)
-    res_blue = cv2.bitwise_and(frame, frame, mask=blue_mask)
-    blue_opening = cv2.morphologyEx(blue_mask, cv2.MORPH_OPEN, kernel)
-    blue_closing = cv2.morphologyEx(blue_opening, cv2.MORPH_CLOSE, kernel)
-
-    contours, h = cv2.findContours(blue_closing, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    contours = sorted(contours, key=cv2.contourArea, reverse = True)
-
-    for x in range(len(contours)):
-        area = cv2.contourArea(contours[x])
-        if area>300:
-            x, y, w, h = cv2.boundingRect(contours[x])
-            frame = cv2.rectangle(frame, (x, y), (x+w, y+h),( 0, 255, 0), 2)
-            frame = cv2.rectangle(frame, (x, y), (x+60, y-25), (0, 0, 0), -1)
-            #frame = cv2.circle(frame, (x + (w//2),y + (h//2)), 20, (0, 255, 0), -1)
-            print("x:",x + (w//2),"y:",y + (h//2))
-            cv2.putText(frame, "Blue", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2)
-
  #RED COLOR DETECTION
 
     red_lower = np.array([136, 87, 111])
