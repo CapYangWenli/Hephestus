@@ -2,13 +2,16 @@
 
 import RPi.GPIO as GPIO          
 from time import sleep
-from gpiozero import AngularServo
+from gpiozero import AngularServo, Device
 from scripts import StringToTuple
+from gpiozero.pins.pigpio import PiGPIOFactory
+
 
 class Car:
+    
 
     ang = -42
-    zang = 0
+    zang = 10
 
     in1 = 24
     in2 = 25
@@ -26,6 +29,7 @@ class Car:
         GPIO.setup(cls.ena,GPIO.OUT)
         GPIO.output(cls.in1,GPIO.LOW)
         GPIO.output(cls.in2,GPIO.LOW)
+#         Device.pin_factory = PiGPIOFactory()
 
         cls.pa=GPIO.PWM(cls.ena,1000)
 

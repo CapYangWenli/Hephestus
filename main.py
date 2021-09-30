@@ -6,7 +6,7 @@ dev_angle = 10
 cap = cv2.VideoCapture(0)
 car1 = Car()
 car1.ChangeMotorDrc(1)
-car1.ChangeMotorSp(20)
+car1.ChangeMotorSp(50)
 
 
 
